@@ -25,11 +25,14 @@ public class Player extends Entity {
     private float stateTime;
     private float speed = 15;
     private int direction;
+    private int subDirection;
 
     public static final int LEFT = -1;
     public static final int RIGHT = 1;
     public static final int IDLE = 0;
     public static final int SIT = 2;
+    public static final int ATTACK_LEFT = -3;
+    public static final int ATTACK_RIGHT = 3;
 
     public Player(World world, Vector2 initialPosition) {
         super(world);
@@ -116,13 +119,30 @@ public class Player extends Entity {
         unrollBody();
     }
 
+    public void attackLeft () {
+        subDirection = ATTACK_LEFT;
+    }
+
+    public void attackRight () {
+        subDirection = ATTACK_RIGHT;
+    }
+
     @Override
     protected void getCurrentFrame() {
 
         if (direction == LEFT) {
-            currentFrame = new Sprite(Assets.getAnimation(3, 3, .25f, map).getKeyFrame(stateTime));
+            if (subDirection == ATTACK_LEFT) {
+                currentFrame = new Sprite(map[0][1]);
+            } else {
+                currentFrame = new Sprite(Assets.getAnimation(3, 3, .25f, map).getKeyFrame(stateTime));
+            }
+
         } else if (direction == RIGHT) {
-            currentFrame = new Sprite(Assets.getAnimation(2, 3, .25f, map).getKeyFrame(stateTime));
+            if (subDirection == ATTACK_LEFT) {
+                currentFrame = new Sprite(map[0][2]);
+            } else {
+                currentFrame = new Sprite(Assets.getAnimation(2, 3, .25f, map).getKeyFrame(stateTime));
+            }
         } else if (direction == SIT) {
             currentFrame = new Sprite(map[0][0]);
         }

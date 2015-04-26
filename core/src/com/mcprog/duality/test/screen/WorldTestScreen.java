@@ -32,6 +32,7 @@ public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
     private boolean right;
     private boolean sit;
     private boolean roll;
+    private boolean attack1;
     private float playerSpeed = 8;
 
     public WorldTestScreen () {
@@ -65,6 +66,9 @@ public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
 
         if (left && !right) {
             player.moveLeft();
+            if (attack1) {
+                player.attackRight();
+            }
             if (roll) {
                 player.roll();
             } else {
@@ -73,6 +77,9 @@ public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
 
         } else if (right && !left) {
             player.moveRight();
+            if (attack1) {
+                player.attackRight();
+            }
             if (roll) {
                 player.roll();
             } else {
@@ -136,6 +143,9 @@ public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
         if (keycode == Input.Keys.S) {
             roll = true;
         }
+        if (keycode == Input.Keys.F) {
+            attack1 = true;
+        }
         return true;
     }
 
@@ -153,6 +163,9 @@ public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
         }
         if (keycode == Input.Keys.S) {
             roll = false;
+        }
+        if (keycode == Input.Keys.UP) {
+            attack1 = false;
         }
         return true;
     }

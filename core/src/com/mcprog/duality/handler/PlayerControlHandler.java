@@ -11,8 +11,33 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class PlayerControlHandler implements InputProcessor, ControllerListener {
 
-    public PlayerControlHandler (int left, int right, int sit, int attack1, int attack2, int jump, int interact) {
+    private int left;
+    private int right;
+    private int up;
+    private int down;
+    private int jump;
+    private int roll;
+    private int sit;
+    private int interact;
+    private int attack1;
+    private int attack2;
+    private int defence1;
+    private int defence2;
 
+
+    public PlayerControlHandler (int left, int right, int up, int down, int jump, int roll, int sit, int interact, int attack1, int attack2, int defence1, int defence2) {
+        this.left = left;
+        this.right = right;
+        this.up = up;
+        this.down = down;
+        this.jump = jump;
+        this.roll = roll;
+        this.sit = sit;
+        this.interact = interact;
+        this.attack1 = attack1;
+        this.attack2 = attack2;
+        this.defence1 = defence1;
+        this.defence2 = defence2;
     }
 
     @Override
