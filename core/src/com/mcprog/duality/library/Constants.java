@@ -7,4 +7,7 @@ public class Constants {
 
     public static final int RAW_WIDTH = 856;
     public static final int RAW_HEIGHT = 482;
+
+    public static final int WORLD_WIDTH = 50;
+    public static final int WORLD_HEIGHT = 30;
 }

@@ -30,7 +30,7 @@ public abstract class Entity {
 
     protected abstract void getCurrentFrame ();
 
-    public void update () {
+    public void update (float delta) {
 
     }
 

@@ -13,18 +13,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mcprog.duality.library.Constants;
+import com.mcprog.duality.test.world.Bounds;
 import com.mcprog.duality.world.Player;
 
 /**
  * Created by mcprog on 4/25/2015.
  */
-public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
+public class WorldTestScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
     private World world;
     private Player player;
+    private Bounds bounds;
     private Sprite bg;
     private float stateTime;
     private static final int MIN_DIM = 32;
@@ -44,9 +46,9 @@ public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
     @Override
     public void show() {
         stateTime = 0;
-        Gdx.input.setInputProcessor(this);
-        world = new World(Vector2.Zero, true);
+        world = new World(new Vector2(0, -9.81f), true);
         player = new Player(world, Vector2.Zero);
+        bounds = new Bounds(world, Constants.WORLD_WIDTH / 2, Constants.WORLD_HEIGHT / 2);
         /*player = new Sprite(new Texture("badlogic.jpg"));
         //player.setCenter(0, 0);
         player.setSize(25, 25);*/
@@ -59,53 +61,21 @@ public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(.1f, .1f, .1f, 1);
+        Gdx.gl.glClearColor(1f, 1f, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stateTime += delta;
 
-        if (left && !right) {
-            player.moveLeft();
-            if (attack1) {
-                player.attackRight();
-            }
-            if (roll) {
-                player.roll();
-            } else {
-                player.unroll();
-            }
-
-        } else if (right && !left) {
-            player.moveRight();
-            if (attack1) {
-                player.attackRight();
-            }
-            if (roll) {
-                player.roll();
-            } else {
-                player.unroll();
-            }
-
-        } else {
-            player.stop();
-            if (sit) {
-                player.sit();
-            } else if (roll) {
-                player.roll();
-            } else {
-                player.unroll();
-            }
-        }
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        bg.draw(batch);
+        //bg.draw(batch);
         batch.end();
 
         player.draw(stateTime, batch);
         debugRenderer.render(world, camera.combined);
 
-
+        player.update(delta);
 
         world.step(1/60f, 8, 3);
 
@@ -123,80 +93,5 @@ public class WorldTestScreen extends ScreenAdapter implements InputProcessor {
 
         //camera.viewportHeight = height;
         camera.update();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.A) {
-
-            left = true;
-            sit = false;
-        }
-        if (keycode == Input.Keys.D) {
-
-            right = true;
-            sit = false;
-        }
-        if (keycode == Input.Keys.C) {
-            sit = !sit;
-        }
-        if (keycode == Input.Keys.S) {
-            roll = true;
-        }
-        if (keycode == Input.Keys.F) {
-            attack1 = true;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        if (keycode == Input.Keys.A) {
-
-            left = false;
-            sit = false;
-        }
-        if (keycode == Input.Keys.D) {
-
-            right = false;
-            sit = false;
-        }
-        if (keycode == Input.Keys.S) {
-            roll = false;
-        }
-        if (keycode == Input.Keys.UP) {
-            attack1 = false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
     }
 }
