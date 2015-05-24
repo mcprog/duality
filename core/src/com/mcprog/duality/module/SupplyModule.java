@@ -30,6 +30,10 @@ public abstract class SupplyModule<TOut> implements ISupplier<TOut>, IWorldAcces
         objects.addAll(objectsToAdd);
     }
 
+    public List<TOut> getSupply(){
+        return objects;
+    }
+
     @Override
     public void requestRemove(TOut remove){
         objectsToRemove.add(remove);
