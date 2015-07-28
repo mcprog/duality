@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,11 +12,32 @@ namespace Duality
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Texture2D tex;
+        Vector2 texPos;
+        ///Color[] colorData;
 
         public Game1()
         {
+            this.Window.Title = "Duality = Launching";
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            ///TargetElapsedTime = TimeSpan.FromSeconds(1f / 60f);
+            this.IsFixedTimeStep = false;
+            this.IsMouseVisible = true;
+            graphics.SynchronizeWithVerticalRetrace = false;
+            
+        }
+
+        protected override void OnActivated(object sender, EventArgs args)
+        {
+            Window.Title = "Duality = Activated";
+            base.OnActivated(sender, args);
+        }
+
+        protected override void OnDeactivated(object sender, EventArgs args)
+        {
+            Window.Title = "Duality != Activated";
+            base.OnDeactivated(sender, args);
         }
 
         /// <summary>
@@ -27,7 +49,14 @@ namespace Duality
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            texPos = new Vector2(0, 0);
+            tex = new Texture2D(GraphicsDevice, 100, 100);
+            Color[] colorData = new Color[100 * 100];
+            for (int i = 0; i < 10000; ++i)
+            {
+                colorData[i] = Color.Red;
+            }
+            tex.SetData<Color>(colorData);
             base.Initialize();
         }
 
@@ -59,12 +88,22 @@ namespace Duality
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            if (IsActive)
+            {
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    Exit();
 
-            // TODO: Add your update logic here
+                // TODO: Add your update logic here
 
-            base.Update(gameTime);
+
+                ++texPos.X;
+                if (texPos.X > this.GraphicsDevice.Viewport.Width)
+                {
+                    texPos.X = -100;
+                }
+
+                base.Update(gameTime);
+            }
         }
 
         /// <summary>
@@ -73,9 +112,14 @@ namespace Duality
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Beige);
 
             // TODO: Add your drawing code here
+            var fps = 1 / gameTime.ElapsedGameTime.TotalSeconds;
+            Window.Title = fps.ToString();
+            spriteBatch.Begin();
+            spriteBatch.Draw(tex, texPos);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
