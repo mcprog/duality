@@ -1,29 +1,36 @@
 ﻿using System;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Duality
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class DualityGame : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D tex;
-        Vector2 texPos;
-        ///Color[] colorData;
+        Vector2 position;
+        Texture2D texture;
+        Song whoDatSong;
+        private AnimatedSprite animatedSprite;
+        private TextureIndexed stoneTile;
+        private TextureAtlas stoneTileAtas;
+        
 
-        public Game1()
+        public DualityGame()
         {
             this.Window.Title = "Duality = Launching";
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            ///TargetElapsedTime = TimeSpan.FromSeconds(1f / 60f);
+            //TargetElapsedTime = TimeSpan.FromSeconds(1f / 60f);
             this.IsFixedTimeStep = false;
-            this.IsMouseVisible = true;
+            //this.TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 16);
+            //this.IsMouseVisible = true;
             graphics.SynchronizeWithVerticalRetrace = false;
             
         }
@@ -31,12 +38,16 @@ namespace Duality
         protected override void OnActivated(object sender, EventArgs args)
         {
             Window.Title = "Duality = Activated";
+           
+            
+            MediaPlayer.Resume();
             base.OnActivated(sender, args);
         }
 
         protected override void OnDeactivated(object sender, EventArgs args)
         {
             Window.Title = "Duality != Activated";
+            MediaPlayer.Pause();
             base.OnDeactivated(sender, args);
         }
 
@@ -49,15 +60,12 @@ namespace Duality
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            texPos = new Vector2(0, 0);
-            tex = new Texture2D(GraphicsDevice, 100, 100);
-            Color[] colorData = new Color[100 * 100];
-            for (int i = 0; i < 10000; ++i)
-            {
-                colorData[i] = Color.Red;
-            }
-            tex.SetData<Color>(colorData);
+            
             base.Initialize();
+            position = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2f,
+                                    graphics.GraphicsDevice.Viewport.Height / 2f);
+            
+
         }
 
         /// <summary>
@@ -70,6 +78,12 @@ namespace Duality
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            texture = this.Content.Load<Texture2D>("portal");
+            animatedSprite = new AnimatedSprite(texture, 2, 8, 0.1);
+            stoneTileAtas = new TextureAtlas(this.Content.Load<Texture2D>("stone-tiles1"), 2, 8);
+            stoneTile = new TextureIndexed(stoneTileAtas);
+            whoDatSong = this.Content.Load<Song>("J Cole - Who Dat");
+            MediaPlayer.Play(whoDatSong);
         }
 
         /// <summary>
@@ -79,6 +93,8 @@ namespace Duality
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            
+            
         }
 
         /// <summary>
@@ -90,20 +106,12 @@ namespace Duality
         {
             if (IsActive)
             {
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                    Exit();
-
-                // TODO: Add your update logic here
-
-
-                ++texPos.X;
-                if (texPos.X > this.GraphicsDevice.Viewport.Width)
-                {
-                    texPos.X = -100;
-                }
-
-                base.Update(gameTime);
+                MouseState state = Mouse.GetState();
+                position.X = state.X;
+                position.Y = state.Y;
+                animatedSprite.Update(gameTime);
             }
+            base.Update(gameTime);
         }
 
         /// <summary>
@@ -115,11 +123,9 @@ namespace Duality
             GraphicsDevice.Clear(Color.Beige);
 
             // TODO: Add your drawing code here
-            var fps = 1 / gameTime.ElapsedGameTime.TotalSeconds;
-            Window.Title = fps.ToString();
-            spriteBatch.Begin();
-            spriteBatch.Draw(tex, texPos);
-            spriteBatch.End();
+            
+            animatedSprite.Draw(spriteBatch, position);
+            stoneTile.Draw(spriteBatch, new Vector2(100, 100));
 
             base.Draw(gameTime);
         }
