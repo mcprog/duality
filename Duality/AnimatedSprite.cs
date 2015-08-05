@@ -3,12 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Duality
 {
-    public class AnimatedSprite : ICanBeDrawn
+    public class AnimatedSprite
     {
         public TextureAtlas Atlas;
         public double FrameTime { get; set; }
         //private int currentFrame;
-        private int totalFrames;
+        
         private double cumIntTime;
 
         public AnimatedSprite(Texture2D texture, int rows, int columns)
@@ -18,7 +18,6 @@ namespace Duality
             Atlas.Columns = columns;
             Atlas.Index = 0;
             FrameTime = 1;
-            totalFrames = Atlas.Rows*Atlas.Columns;
         }
 
         public AnimatedSprite(Texture2D texture, int rows, int columns, double frameTime)
@@ -28,7 +27,6 @@ namespace Duality
             Atlas.Columns = columns;
             Atlas.Index = 0;
             FrameTime = frameTime;
-            totalFrames = Atlas.Rows * Atlas.Columns;
         }
 
         public void Update(GameTime gameTime)
@@ -39,7 +37,7 @@ namespace Duality
                 ++Atlas.Index;
                 cumIntTime = 0;
             }
-            if (Atlas.Index == totalFrames)
+            if (Atlas.Index == Atlas.TotalFrames)
                 Atlas.Index = 0;
         }
 

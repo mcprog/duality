@@ -5,6 +5,7 @@ namespace Duality
 {
     public interface ICanBeDrawn
     {
-        void Draw(SpriteBatch spriteBatch, Vector2 location);
+
+        void Draw(SpriteBatch spriteBatch, Color color);
     }
 }

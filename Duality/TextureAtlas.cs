@@ -9,12 +9,15 @@ namespace Duality
         public int Columns { get; set; }
         public int Index { get; set; }
 
+        public int TotalFrames { get; }
+
         public TextureAtlas(Texture2D texture, int rows, int columns, int index)
         {
             Texture = texture;
             Rows = rows;
             Columns = columns;
             Index = index;
+            TotalFrames = Rows*Columns;
         }
 
         public TextureAtlas(Texture2D texture, int rows, int columns)
@@ -23,6 +26,17 @@ namespace Duality
             Rows = rows;
             Columns = columns;
             Index = 0;
+            TotalFrames = Rows * Columns;
+        }
+
+        public int GetTileWidth()
+        {
+            return Texture.Width / Columns;
+        }
+
+        public int GetTileHeight()
+        {
+            return Texture.Height / Rows;
         }
     }
 }

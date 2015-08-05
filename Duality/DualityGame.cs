@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text;
+using System.Collections;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -20,6 +20,10 @@ namespace Duality
         private AnimatedSprite animatedSprite;
         private TextureIndexed stoneTile;
         private TextureAtlas stoneTileAtas;
+        //private ArrayList tilesArray;
+        private Grid grid;
+        private bool justRightPressed;
+        private bool justRightReleased;
         
 
         public DualityGame()
@@ -30,7 +34,7 @@ namespace Duality
             //TargetElapsedTime = TimeSpan.FromSeconds(1f / 60f);
             this.IsFixedTimeStep = false;
             //this.TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 16);
-            //this.IsMouseVisible = true;
+            this.IsMouseVisible = true;
             graphics.SynchronizeWithVerticalRetrace = false;
             
         }
@@ -64,6 +68,7 @@ namespace Duality
             base.Initialize();
             position = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2f,
                                     graphics.GraphicsDevice.Viewport.Height / 2f);
+            grid = new Grid(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             
 
         }
@@ -83,7 +88,7 @@ namespace Duality
             stoneTileAtas = new TextureAtlas(this.Content.Load<Texture2D>("stone-tiles1"), 2, 8);
             stoneTile = new TextureIndexed(stoneTileAtas);
             whoDatSong = this.Content.Load<Song>("J Cole - Who Dat");
-            MediaPlayer.Play(whoDatSong);
+            //MediaPlayer.Play(whoDatSong);
         }
 
         /// <summary>
@@ -106,10 +111,50 @@ namespace Duality
         {
             if (IsActive)
             {
-                MouseState state = Mouse.GetState();
-                position.X = state.X;
-                position.Y = state.Y;
-                animatedSprite.Update(gameTime);
+                KeyboardState kState = Keyboard.GetState();
+                MouseState mState = Mouse.GetState();
+
+                if (kState.IsKeyDown(Keys.Escape))
+                    Exit();
+                stoneTile.Location.X = ((int)(mState.X / 16f)) * 16f + 8;
+                stoneTile.Location.Y = ((int)(mState.Y / 16f)) * 16f + 8;
+
+                if (mState.LeftButton == ButtonState.Pressed)
+                {
+                    grid.Add(new TextureIndexed(stoneTile.Atlas, stoneTile.Location));
+                    //tilesArray.Add(new TextureIndexed(stoneTile.Atlas,
+                      //  new Vector2(stoneTile.Location.X, stoneTile.Location.Y)));
+                }
+                if (mState.RightButton == ButtonState.Pressed & !justRightReleased)
+                {
+                    justRightPressed = true;
+                    
+                }
+                if (mState.RightButton == ButtonState.Released & justRightPressed)
+                {
+                    justRightReleased = true;
+                }
+                if (justRightPressed & justRightReleased)
+                {
+                    ++stoneTile.Atlas.Index;
+                    if (stoneTile.Atlas.Index > stoneTile.Atlas.TotalFrames)
+                        stoneTile.Atlas.Index = 0;
+                    justRightPressed = false;
+                    justRightReleased = false;
+                }
+                if (mState.MiddleButton == ButtonState.Pressed)
+                {
+                    grid.RemoveAt((int)(stoneTile.Location.X / 16), (int)(stoneTile.Location.Y / 16));
+                    //for (int i = 0; i < tilesArray.Count; ++i)
+                    ///{
+                    //    TextureIndexed tile = (TextureIndexed)tilesArray[i];
+                    //    if (tile.Location == stoneTile.Location)
+                    //    {
+                    //        tilesArray.Remove(tile);
+                    //    }
+                    //}
+                }
+
             }
             base.Update(gameTime);
         }
@@ -120,12 +165,14 @@ namespace Duality
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Beige);
+            GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
-            
-            animatedSprite.Draw(spriteBatch, position);
-            stoneTile.Draw(spriteBatch, new Vector2(100, 100));
+
+            //animatedSprite.Draw(spriteBatch, position);
+            grid.Draw(spriteBatch, Color.White);
+            stoneTile.Draw(spriteBatch, new Color(Color.White, .75f));
+
 
             base.Draw(gameTime);
         }
