@@ -24,6 +24,7 @@ namespace Duality
         private Grid grid;
         private bool justRightPressed;
         private bool justRightReleased;
+        private Color flushColor;
         
 
         public DualityGame()
@@ -69,7 +70,8 @@ namespace Duality
             position = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2f,
                                     graphics.GraphicsDevice.Viewport.Height / 2f);
             grid = new Grid(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            
+            flushColor = Color.White;
+
 
         }
 
@@ -116,16 +118,18 @@ namespace Duality
 
                 if (kState.IsKeyDown(Keys.Escape))
                     Exit();
+                if (kState.IsKeyDown(Keys.Delete))
+                {
+                    grid.ClearGrid(); 
+                }
                 stoneTile.Location.X = ((int)(mState.X / 16f)) * 16f + 8;
                 stoneTile.Location.Y = ((int)(mState.Y / 16f)) * 16f + 8;
 
                 if (mState.LeftButton == ButtonState.Pressed)
                 {
                     grid.Add(new TextureIndexed(stoneTile.Atlas, stoneTile.Location));
-                    //tilesArray.Add(new TextureIndexed(stoneTile.Atlas,
-                      //  new Vector2(stoneTile.Location.X, stoneTile.Location.Y)));
                 }
-                if (mState.RightButton == ButtonState.Pressed & !justRightReleased)
+                /*if (mState.RightButton == ButtonState.Pressed & !justRightReleased)
                 {
                     justRightPressed = true;
                     
@@ -141,19 +145,23 @@ namespace Duality
                         stoneTile.Atlas.Index = 0;
                     justRightPressed = false;
                     justRightReleased = false;
+                }*/
+                if (mState.RightButton == ButtonState.Pressed)
+                {
+                    grid.RemoveAt((int)(stoneTile.Location.X / 16), (int)(stoneTile.Location.Y / 16));
                 }
                 if (mState.MiddleButton == ButtonState.Pressed)
                 {
-                    grid.RemoveAt((int)(stoneTile.Location.X / 16), (int)(stoneTile.Location.Y / 16));
-                    //for (int i = 0; i < tilesArray.Count; ++i)
-                    ///{
-                    //    TextureIndexed tile = (TextureIndexed)tilesArray[i];
-                    //    if (tile.Location == stoneTile.Location)
-                    //    {
-                    //        tilesArray.Remove(tile);
-                    //    }
-                    //}
+                    grid.ClearGrid();
                 }
+                flushColor.R = (byte)(mState.ScrollWheelValue / 64);
+                flushColor.G = (byte)(mState.ScrollWheelValue / 64);
+                flushColor.B = (byte)(mState.ScrollWheelValue / 64);
+                
+                
+                
+
+                grid.Update();
 
             }
             base.Update(gameTime);
@@ -165,7 +173,7 @@ namespace Duality
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(flushColor);
 
             // TODO: Add your drawing code here
 
