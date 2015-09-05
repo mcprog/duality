@@ -2,6 +2,7 @@ local credits = {}
 
 function credits:enter(previous)
 	love.graphics.setBackgroundColor(213, 36, 154)
+	love.graphics.setColor(255, 255, 255)
 end
 
 function credits:draw()
