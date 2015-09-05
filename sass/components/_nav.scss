@@ -1,0 +1,23 @@
+@import url(https://fonts.googleapis.com/css?family=Yantramanav:300,400,700);
+
+.navbar {
+  margin: 15px 0;
+  font-family: 'Yantramanav', sans-serif;
+  .glyphicon-menu-hamburger {
+    color: white;
+  }
+  .navbar-nav {
+    text-transform: uppercase;
+    li {
+      a {
+        border-bottom: 4px solid transparent;
+
+      }
+      &.active {
+        a {
+          border-bottom: 4px solid white;
+        }
+      }
+    }
+  }
+}

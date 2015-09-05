@@ -1,0 +1,84 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+@import url(https://fonts.googleapis.com/css?family=Yantramanav:300,400,700);
+/* line 3, ../sass/components/_nav.scss */
+.navbar {
+  margin: 15px 0;
+  font-family: 'Yantramanav', sans-serif;
+}
+/* line 6, ../sass/components/_nav.scss */
+.navbar .glyphicon-menu-hamburger {
+  color: white;
+}
+/* line 9, ../sass/components/_nav.scss */
+.navbar .navbar-nav {
+  text-transform: uppercase;
+}
+/* line 12, ../sass/components/_nav.scss */
+.navbar .navbar-nav li a {
+  border-bottom: 4px solid transparent;
+}
+/* line 17, ../sass/components/_nav.scss */
+.navbar .navbar-nav li.active a {
+  border-bottom: 4px solid white;
+}
+
+/* line 11, ../sass/duality.scss */
+.btn .glyphicon {
+  vertical-align: text-top;
+}
+
+/* line 17, ../sass/duality.scss */
+.stone-bg {
+  background-image: url("../images/stone-bg.png");
+}
+
+/* line 21, ../sass/duality.scss */
+.row-eq-height {
+  height: 150px;
+}
+/* line 23, ../sass/duality.scss */
+.row-eq-height .col {
+  height: 100%;
+}
+/* line 25, ../sass/duality.scss */
+.row-eq-height .col .panel {
+  height: 85%;
+}
+
+/* line 33, ../sass/duality.scss */
+.row-eq-height-md .col .panel-body {
+  height: 150px;
+}
+
+/* line 39, ../sass/duality.scss */
+body {
+  margin-bottom: 64px;
+}
+
+/* line 43, ../sass/duality.scss */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+/* line 48, ../sass/duality.scss */
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 64px;
+  background: purple;
+  color: white;
+}
+/* line 55, ../sass/duality.scss */
+.footer .container {
+  text-align: center;
+  padding: 16px;
+}
+/* line 58, ../sass/duality.scss */
+.footer .container .glyphicon {
+  vertical-align: text-top;
+}
