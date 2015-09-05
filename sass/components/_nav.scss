@@ -6,8 +6,12 @@
   .glyphicon-menu-hamburger {
     color: white;
   }
+  .navbar-brand {
+    color: white;
+  }
   .navbar-nav {
     text-transform: uppercase;
+
     li {
       a {
         border-bottom: 4px solid transparent;
@@ -20,4 +24,8 @@
       }
     }
   }
+}
+
+.navbar-inverse {
+  background-image: linear-gradient(150deg, purple 65%, #101010 35%);
 }

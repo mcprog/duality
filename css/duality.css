@@ -13,16 +13,25 @@
   color: white;
 }
 /* line 9, ../sass/components/_nav.scss */
+.navbar .navbar-brand {
+  color: white;
+}
+/* line 12, ../sass/components/_nav.scss */
 .navbar .navbar-nav {
   text-transform: uppercase;
 }
-/* line 12, ../sass/components/_nav.scss */
+/* line 16, ../sass/components/_nav.scss */
 .navbar .navbar-nav li a {
   border-bottom: 4px solid transparent;
 }
-/* line 17, ../sass/components/_nav.scss */
+/* line 21, ../sass/components/_nav.scss */
 .navbar .navbar-nav li.active a {
   border-bottom: 4px solid white;
+}
+
+/* line 29, ../sass/components/_nav.scss */
+.navbar-inverse {
+  background-image: linear-gradient(150deg, purple 65%, #101010 35%);
 }
 
 /* line 11, ../sass/duality.scss */
