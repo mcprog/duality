@@ -8,11 +8,16 @@ class Drawable
     width_over_height = @image.width.to_f / @image.height.to_f
     @width = (width.nil?) ? (height.nil?) ? @image.width : height * width_over_height : width
     @height = (height.nil?) ? (width.nil?) ? @image.height : width / width_over_height : height
+    @scl_x = @width / @image.width.to_f
+    @scl_y = @height / @image.height.to_f
+  end
+
+  
+  def draw_center_screen
+    @image.draw((WIDTH - @image.width * @scl_x) / 2 + @x, (HEIGHT - @image.height * @scl_y) / 2 + @y, @z, @scl_x, @scl_y)
   end
 
   def draw_from_center(x = @x, y = @y)
-    scl_x = @width / @image.width.to_f
-    scl_y = @height / @image.height.to_f
-    @image.draw((WIDTH - @image.width * scl_x) / 2 + x, (HEIGHT - @image.height * scl_y) / 2 + y, @z, scl_x, scl_y)
+    @image.draw(-@image.width * @scl_x / 2 + x, -@image.height * @scl_y / 2 + y, @z, @scl_x, @scl_y)
   end
 end
