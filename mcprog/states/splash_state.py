@@ -14,5 +14,4 @@ class SplashState(GameState):
         print("successfully loaded image")
 
     def draw(self):
-        pygame.draw
         return pygame.transform.scale(self.img.convert_alpha(), (WIN_HEIGHT, WIN_HEIGHT))
