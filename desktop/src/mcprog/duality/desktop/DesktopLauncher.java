@@ -10,7 +10,6 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = Reference.W_WIDTH;
 		config.height = Reference.W_HEIGHT;
-        config.resizable = false;
 		new LwjglApplication(new Duality(), config);
 	}
 }

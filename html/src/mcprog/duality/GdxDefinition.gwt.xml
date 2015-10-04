@@ -13,5 +13,5 @@
 	<inherits name='Duality' />
 	<entry-point class='mcprog.duality.client.HtmlLauncher' />
 	
-	<set-configuration-property name="gdx.assetpath" value="../android/assets" />
+	<set-configuration-property name="gdx.assetpath" value="../android/assets/" />
 </module>

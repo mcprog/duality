@@ -1,5 +1,6 @@
 package mcprog.duality.ui;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -49,6 +50,12 @@ public abstract class MenuFactory extends Table {
         storyButton = getInitImageButton("images/story-button.png", 86, 32);
     }
 
+    private void addQuitButton () {
+        if (Gdx.app.getType() != Application.ApplicationType.WebGL && Gdx.app.getType() != Application.ApplicationType.iOS) {
+            add(quitButton).pad(6);
+        }
+    }
+
     /**
      * Sets up the main menu for duality that users see upon entering the game.
      * Also sets state to MAIN.
@@ -57,7 +64,7 @@ public abstract class MenuFactory extends Table {
         add(playButton).pad(6).colspan(2);
         row();
         add(optionsButton).pad(3).padTop(6);
-        add(quitButton).pad(3).padTop(6);
+        addQuitButton();
 
         state = MAIN;
     }
@@ -83,7 +90,7 @@ public abstract class MenuFactory extends Table {
         add(multiplayerButton).pad(6).colspan(2);
         row();
         add(backButton).pad(3).padTop(6);
-        add(quitButton).pad(3).padTop(6);
+        addQuitButton();
 
         state = PLAY_SELECT;
     }
@@ -96,7 +103,7 @@ public abstract class MenuFactory extends Table {
         add(storyButton).pad(6).colspan(2);
         row();
         add(backButton).pad(6);
-        add(quitButton).pad(6);
+        addQuitButton();
 
         state = SINGLE_SELECT;
     }
