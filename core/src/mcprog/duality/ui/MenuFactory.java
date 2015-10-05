@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+import mcprog.duality.utility.PlatformSpecific;
+
 /**
  * Created by mcprog on 10/3/2015.
  * An abstract class that contains all ui elements, configurations and listeners in one play.
@@ -51,7 +53,7 @@ public abstract class MenuFactory extends Table {
     }
 
     private void addQuitButton () {
-        if (Gdx.app.getType() != Application.ApplicationType.WebGL && Gdx.app.getType() != Application.ApplicationType.iOS) {
+        if (PlatformSpecific.isExitable()) {
             add(quitButton).pad(6);
         }
     }
@@ -87,8 +89,10 @@ public abstract class MenuFactory extends Table {
     protected void setupPlaySelect () {
         add(singleplayerButton).pad(6).colspan(2);
         row();
-        add(multiplayerButton).pad(6).colspan(2);
-        row();
+        if (PlatformSpecific.isMultiplayer()) {
+            add(multiplayerButton).pad(6).colspan(2);
+            row();
+        }
         add(backButton).pad(3).padTop(6);
         addQuitButton();
 
