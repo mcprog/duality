@@ -54,7 +54,7 @@ public class MenuScreen extends ScreenAdapter {
         table = new MenuTable();
         table.setBounds(0, 0, guiCam.viewportWidth, guiCam.viewportHeight);
 
-        //table.debug();
+        table.debug();
 
         stage.addActor(table);
 

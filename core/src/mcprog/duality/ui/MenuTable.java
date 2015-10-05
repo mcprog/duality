@@ -11,6 +11,7 @@ public class MenuTable extends MenuFactory {
      * This constructor does all composition and listener assignment.
      */
     public MenuTable () {
+        setFillParent(true);
         setupMainMenu();
 
         listenAndQuit(quitButton);
@@ -20,5 +21,6 @@ public class MenuTable extends MenuFactory {
         listenAndSwitchTo(singleplayerButton, SINGLE_SELECT);
         listenAndSwitchTo(multiplayerButton, MULTI_SELECT);
         listenAndSwitchTo(optionsButton, OPTIONS);
+        listenToTwitterButton();
     }
 }

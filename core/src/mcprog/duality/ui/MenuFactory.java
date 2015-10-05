@@ -4,8 +4,10 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -30,6 +32,7 @@ public abstract class MenuFactory extends Table {
     protected ImageButton multiplayerButton;
     protected ImageButton backButton;
     protected ImageButton storyButton;
+    protected ImageButton twitterButton;
 
     // States
     protected int state;
@@ -50,12 +53,25 @@ public abstract class MenuFactory extends Table {
         multiplayerButton = getInitImageButton("images/multiplayer-button.png", 86, 32);
         backButton = getInitImageButton("images/back-button.png", 30, 32);
         storyButton = getInitImageButton("images/story-button.png", 86, 32);
+        twitterButton = getInitImageButton("images/twitter-button.png", 120, 128);
     }
 
     private void addQuitButton () {
         if (PlatformSpecific.isExitable()) {
-            add(quitButton).pad(6);
+            addRight(quitButton);
         }
+    }
+
+    private <T extends Actor> Cell<T> addLeft (T actor) {
+        return add(actor).pad(6).padLeft(0).padRight(3);
+    }
+
+    private <T extends Actor> Cell<T> addCenter (T actor) {
+        return add(actor).pad(6).padLeft(3).padRight(3);
+    }
+
+    private <T extends Actor> Cell<T> addRight (T actor) {
+        return add(actor).pad(6).padLeft(3).padRight(0);
     }
 
     /**
@@ -63,10 +79,12 @@ public abstract class MenuFactory extends Table {
      * Also sets state to MAIN.
      */
     protected void setupMainMenu () {
-        add(playButton).pad(6).colspan(2);
+        addCenter(playButton).colspan(3);
         row();
-        add(optionsButton).pad(3).padTop(6);
+        addLeft(optionsButton);
+        addCenter(twitterButton).size(30, 32);
         addQuitButton();
+
 
         state = MAIN;
     }
@@ -77,7 +95,7 @@ public abstract class MenuFactory extends Table {
      * Also sets state to OPTIONS.
      */
     protected void setupOptionsMenu () {
-        add(backButton);
+        addCenter(backButton);
 
         state = OPTIONS;
     }
@@ -87,13 +105,13 @@ public abstract class MenuFactory extends Table {
      * Sets state to PLAY_SELECT.
      */
     protected void setupPlaySelect () {
-        add(singleplayerButton).pad(6).colspan(2);
+        addCenter(singleplayerButton).colspan(2);
         row();
         if (PlatformSpecific.isMultiplayer()) {
-            add(multiplayerButton).pad(6).colspan(2);
+            addCenter(multiplayerButton).colspan(2);
             row();
         }
-        add(backButton).pad(3).padTop(6);
+        addLeft(backButton);
         addQuitButton();
 
         state = PLAY_SELECT;
@@ -104,9 +122,9 @@ public abstract class MenuFactory extends Table {
      * Sets state to SINGLE_SELECT.
      */
     protected void setupSingleSelect () {
-        add(storyButton).pad(6).colspan(2);
+        addCenter(storyButton).colspan(2);
         row();
-        add(backButton).pad(6);
+        addLeft(backButton);
         addQuitButton();
 
         state = SINGLE_SELECT;
@@ -117,7 +135,7 @@ public abstract class MenuFactory extends Table {
      * Sets state to MULTI_SELECT.
      */
     protected void setupMultiSelect () {
-        add(backButton);
+        addCenter(backButton);
 
         state = MULTI_SELECT;
     }
@@ -204,6 +222,15 @@ public abstract class MenuFactory extends Table {
                         setupMainMenu();
                         break;
                 }
+            }
+        });
+    }
+
+    protected void listenToTwitterButton () {
+        twitterButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.net.openURI("https://twitter.com/DualityGame");
             }
         });
     }
