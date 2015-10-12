@@ -2,6 +2,7 @@ package mcprog.duality.ui;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+import mcprog.duality.Duality;
 import mcprog.duality.utility.PlatformSpecific;
 
 /**
@@ -23,6 +25,8 @@ import mcprog.duality.utility.PlatformSpecific;
  * @see MenuTable for implentation example.
  */
 public abstract class MenuFactory extends Table {
+
+    protected Duality game;
 
     // Image Buttons
     protected ImageButton playButton;
@@ -45,15 +49,17 @@ public abstract class MenuFactory extends Table {
     /**
      * Loads images to buttons. If there is file i/o errors, this is probably the culprit.
      */
-    public MenuFactory () {
-        playButton = getInitImageButton("images/play-button.png", 72, 32);
-        quitButton = getInitImageButton("images/quit-button.png", 30, 32);
-        optionsButton = getInitImageButton("images/options-button.png", 30, 32);
-        singleplayerButton = getInitImageButton("images/singleplayer-button.png", 100, 32);
-        multiplayerButton = getInitImageButton("images/multiplayer-button.png", 86, 32);
-        backButton = getInitImageButton("images/back-button.png", 30, 32);
-        storyButton = getInitImageButton("images/story-button.png", 86, 32);
-        twitterButton = getInitImageButton("images/twitter-button.png", 120, 128);
+    public MenuFactory (Duality game) {
+        this.game = game;
+
+        playButton = getInitImageButton("images/ui/play-button.png", 72, 32);
+        quitButton = getInitImageButton("images/ui/quit-button.png", 30, 32);
+        optionsButton = getInitImageButton("images/ui/options-button.png", 30, 32);
+        singleplayerButton = getInitImageButton("images/ui/singleplayer-button.png", 100, 32);
+        multiplayerButton = getInitImageButton("images/ui/multiplayer-button.png", 86, 32);
+        backButton = getInitImageButton("images/ui/back-button.png", 30, 32);
+        storyButton = getInitImageButton("images/ui/story-button.png", 86, 32);
+        twitterButton = getInitImageButton("images/ui/twitter-button.png", 120, 128);
     }
 
     private void addQuitButton () {
@@ -231,6 +237,15 @@ public abstract class MenuFactory extends Table {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.net.openURI("https://twitter.com/DualityGame");
+            }
+        });
+    }
+
+    protected void listenAndSetScreen (Button btn, final Screen newScreen) {
+        btn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(newScreen);
             }
         });
     }

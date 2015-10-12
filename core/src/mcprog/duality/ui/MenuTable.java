@@ -1,5 +1,8 @@
 package mcprog.duality.ui;
 
+import mcprog.duality.Duality;
+import mcprog.duality.screens.GameScreen;
+
 /**
  * Created by mcprog on 10/2/2015.
  * Implementation of the MenuFactory. Simply sets up the main menu and adds listeners.
@@ -7,10 +10,14 @@ package mcprog.duality.ui;
  */
 public class MenuTable extends MenuFactory {
 
+
+
     /**
      * This constructor does all composition and listener assignment.
      */
-    public MenuTable () {
+    public MenuTable (Duality game) {
+        super(game);
+
         setFillParent(true);
         setupMainMenu();
 
@@ -22,5 +29,6 @@ public class MenuTable extends MenuFactory {
         listenAndSwitchTo(multiplayerButton, MULTI_SELECT);
         listenAndSwitchTo(optionsButton, OPTIONS);
         listenToTwitterButton();
+        listenAndSetScreen(storyButton, new GameScreen(game));
     }
 }

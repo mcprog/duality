@@ -9,4 +9,6 @@ public class Reference {
 
     public static final int W_WIDTH = 960;
     public static final int W_HEIGHT = 640;
+
+    public static final float PIXELS_TO_METERS = 1f / 32f;
 }

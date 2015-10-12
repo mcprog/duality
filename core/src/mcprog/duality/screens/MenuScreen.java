@@ -51,10 +51,10 @@ public class MenuScreen extends ScreenAdapter {
         viewportVisualizer = new Sprite(new Texture(Gdx.files.internal("images/gemma-arterton.jpg")));
         viewportVisualizer.setSize(guiCam.viewportWidth, guiCam.viewportHeight);
         stage = new Stage(viewport);
-        table = new MenuTable();
+        table = new MenuTable(game);
         table.setBounds(0, 0, guiCam.viewportWidth, guiCam.viewportHeight);
 
-        table.debug();
+        //table.debug();
 
         stage.addActor(table);
 
@@ -73,14 +73,14 @@ public class MenuScreen extends ScreenAdapter {
 
     public void draw () {
         GL20 gl20 = Gdx.gl;
-        gl20.glClearColor(0, 1, 0, 1);
+        gl20.glClearColor(0, 0, 0, 1);
         gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         guiCam.update();
 
         game.gameBatch.setProjectionMatrix(guiCam.combined);
         game.gameBatch.begin();
-        viewportVisualizer.draw(game.gameBatch);
+        //viewportVisualizer.draw(game.gameBatch);
         game.gameBatch.end();
 
         stage.draw();

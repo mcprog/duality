@@ -3,6 +3,7 @@ package mcprog.duality;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import mcprog.duality.screens.GameScreen;
 import mcprog.duality.screens.MenuScreen;
 
 /**
@@ -27,7 +28,7 @@ public class Duality extends Game {
 	@Override
 	public void create () {
 		gameBatch = new SpriteBatch();
-        setScreen(new MenuScreen(this));
+        setScreen(new GameScreen(this));
 	}
 
 

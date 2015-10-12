@@ -12,11 +12,15 @@ public class PlatformSpecific {
 
     public static boolean isExitable () {
         Application.ApplicationType type = Gdx.app.getType();
-        return type != WebGL || type != iOS;
+        return type != WebGL && type != iOS;
     }
 
     public static boolean isMultiplayer () {
         return Gdx.app.getType() == Desktop;
+    }
+
+    public static boolean isMobile () {
+        return Gdx.app.getType() == Android || Gdx.app.getType() == iOS;
     }
 
 }
