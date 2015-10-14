@@ -3,6 +3,7 @@ package mcprog.duality.core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 import java.sql.Ref;
 
@@ -25,6 +27,8 @@ import mcprog.duality.utility.PlatformSpecific;
  */
 public class Player extends InputAdapter {
 
+    public int attackQueue;
+
     protected float x;
     protected float y;
     protected Sprite sprite;
@@ -32,14 +36,22 @@ public class Player extends InputAdapter {
     protected Body body;
     protected float width;
     protected float height;
+    protected Array<Attack> primaryAttacks;
+    protected Array<Attack> secondaryAttacks;
 
     private int dirX;
     private int dirY;
     private int left;
     private int right;
 
+    private int atkDirX;
+    private int atkDirY;
+
+    private TextureRegion fireball;
+
     public Player (TextureRegion tileRegion, float x, float y) {
         sprite = new Sprite(tileRegion);
+        primaryAttacks = new Array<Attack>();
         this.x = x;
         this.y = y;
         width = sprite.getRegionWidth() * Reference.PIXELS_TO_METERS;
@@ -51,17 +63,22 @@ public class Player extends InputAdapter {
         bodyDef.position.set(x, y);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.fixedRotation = true;
+
+
     }
 
     public void create (World world) {
         body = world.createBody(bodyDef);
         PolygonShape square = new PolygonShape();
-        square.setAsBox(.375f, .5f);
+        square.setAsBox(.37f, .45f);
         body.createFixture(square, 1);
         square.dispose();
+
+        fireball = new TextureRegion(new Texture(Gdx.files.internal("images/fireball.png")), 0, 0, 16, 16);
+
     }
 
-    public void update (float delta) {
+    public void update (float delta, World world) {
         dirX = left + right;
         float posX = body.getPosition().x;
         float posY = body.getPosition().y;
@@ -84,11 +101,23 @@ public class Player extends InputAdapter {
 
         sprite.setRotation(MathUtils.radDeg * body.getAngle());
         sprite.setCenter(body.getPosition().x, body.getPosition().y);
-
+        //todo add this for attacks
+        for (int i = 0; i < attackQueue; ++i) {
+            Attack atk = new Attack(fireball, getPosition().x, getPosition().y, atkDirX * 15, atkDirY * 15);
+            primaryAttacks.add(atk);
+            atk.create(world);
+        }
+        attackQueue = 0;
+        for (Attack atk : primaryAttacks) {
+            atk.update(delta);
+        }
     }
 
     public void draw (SpriteBatch batch) {
         sprite.draw(batch);
+        for (Attack atk : primaryAttacks) {
+            atk.draw(batch);
+        }
     }
 
     public Vector2 getPosition () {
@@ -102,14 +131,28 @@ public class Player extends InputAdapter {
             Gdx.app.log(LogHelper.getClassyTag(this), "Space pressed.");
             Gdx.app.log(LogHelper.getClassyTag(this), "" + ((PolygonShape)(body.getFixtureList().first().getShape())).getRadius());
         }
+        if (keycode == Input.Keys.W) {
+            atkDirY = 1;
+            atkDirX = 0;
+        }
+        if (keycode == Input.Keys.S) {
+            atkDirY = -1;
+            atkDirX = 0;
+        }
         if (keycode == Input.Keys.A) {
             //body.applyLinearImpulse(-1, 0, body.getPosition().x, body.getPosition().y, true);
+            atkDirX = -1;
+            atkDirY = 0;
             left = -1;
         }
         if (keycode == Input.Keys.D) {
             //body.applyLinearImpulse(1, 0, body.getPosition().x, body.getPosition().y, true);
+            atkDirX = 1;
+            atkDirY = 0;
             right = 1;
-            return true;
+        }
+        if (keycode == Input.Keys.UP) {
+            ++attackQueue;
         }
         return false;
     }

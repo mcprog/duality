@@ -45,6 +45,7 @@ public class Tile {
         square.setAsBox(.25f, .25f);
         body.createFixture(square, 1);
         square.dispose();
+        body.setUserData("tile");
     }
 
     public void draw (SpriteBatch batch) {
