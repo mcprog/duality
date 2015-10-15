@@ -106,6 +106,7 @@ public class GameScreen extends ScreenAdapter {
         for (Attack atk : attacks) {
             atk.update(delta);
         }*/
+        terrain.update();
         player.update(delta, physicsWorld);
         collision.update(delta, physicsWorld);
         physicsWorld.step(1/60f, 8, 3);
@@ -140,7 +141,7 @@ public class GameScreen extends ScreenAdapter {
             atk.draw(game.gameBatch);
         }*/
         game.gameBatch.end();
-        box2DDebugRenderer.render(physicsWorld, camera.combined);
+        //box2DDebugRenderer.render(physicsWorld, camera.combined);
     }
 
     @Override

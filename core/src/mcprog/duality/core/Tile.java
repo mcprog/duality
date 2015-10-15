@@ -24,6 +24,7 @@ public class Tile {
     protected Body body;
     protected float width;
     protected float height;
+    protected int health = 5;
 
     public Tile (TextureRegion tileRegion, float x, float y) {
         sprite = new Sprite(tileRegion);
@@ -50,5 +51,17 @@ public class Tile {
 
     public void draw (SpriteBatch batch) {
         sprite.draw(batch);
+    }
+
+    public void setRegion (TextureRegion region) {
+        sprite.setRegion(region);
+    }
+
+    public void decrementHealth () {
+        --health;
+    }
+
+    public boolean isDead () {
+        return health <= 0;
     }
 }

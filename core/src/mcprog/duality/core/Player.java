@@ -3,6 +3,7 @@ package mcprog.duality.core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.sql.Ref;
 
+import mcprog.duality.library.Assets;
 import mcprog.duality.library.Reference;
 import mcprog.duality.utility.LogHelper;
 import mcprog.duality.utility.PlatformSpecific;
@@ -46,6 +48,8 @@ public class Player extends InputAdapter {
 
     private int atkDirX;
     private int atkDirY;
+    private float attackCoolDown;
+    //private Sound fireballWhoosh;
 
     private TextureRegion fireball;
 
@@ -75,6 +79,7 @@ public class Player extends InputAdapter {
         square.dispose();
 
         fireball = new TextureRegion(new Texture(Gdx.files.internal("images/fireball.png")), 0, 0, 16, 16);
+        Assets.loadFireballSounds();
 
     }
 
@@ -101,7 +106,16 @@ public class Player extends InputAdapter {
 
         sprite.setRotation(MathUtils.radDeg * body.getAngle());
         sprite.setCenter(body.getPosition().x, body.getPosition().y);
-        //todo add this for attacks
+
+        for (int i = 0; i < primaryAttacks.size; ++i) {
+            if (primaryAttacks.get(i).body.getUserData() != null) {
+                if (primaryAttacks.get(i).body.getUserData().equals("delete")) {
+                    primaryAttacks.removeIndex(i);
+                }
+            }
+
+        }
+
         for (int i = 0; i < attackQueue; ++i) {
             Attack atk = new Attack(fireball, getPosition().x, getPosition().y, atkDirX * 15, atkDirY * 15);
             primaryAttacks.add(atk);
@@ -111,6 +125,7 @@ public class Player extends InputAdapter {
         for (Attack atk : primaryAttacks) {
             atk.update(delta);
         }
+        attackCoolDown += delta;
     }
 
     public void draw (SpriteBatch batch) {
@@ -133,26 +148,40 @@ public class Player extends InputAdapter {
         }
         if (keycode == Input.Keys.W) {
             atkDirY = 1;
-            atkDirX = 0;
+            if (!Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.D)) {
+                atkDirX = 0;
+            }
         }
         if (keycode == Input.Keys.S) {
             atkDirY = -1;
-            atkDirX = 0;
+            if (!Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.D)) {
+                atkDirX = 0;
+            }
         }
         if (keycode == Input.Keys.A) {
             //body.applyLinearImpulse(-1, 0, body.getPosition().x, body.getPosition().y, true);
             atkDirX = -1;
-            atkDirY = 0;
+            if (!Gdx.input.isKeyPressed(Input.Keys.W) && !Gdx.input.isKeyPressed(Input.Keys.S)) {
+                atkDirY = 0;
+            }
             left = -1;
         }
         if (keycode == Input.Keys.D) {
             //body.applyLinearImpulse(1, 0, body.getPosition().x, body.getPosition().y, true);
             atkDirX = 1;
-            atkDirY = 0;
+            if (!Gdx.input.isKeyPressed(Input.Keys.W) && !Gdx.input.isKeyPressed(Input.Keys.S)) {
+                atkDirY = 0;
+            }
             right = 1;
         }
         if (keycode == Input.Keys.UP) {
-            ++attackQueue;
+            if (attackCoolDown > .5f && (atkDirX != 0 || atkDirY != 0)) {
+                ++attackQueue;
+                attackCoolDown = 0;
+
+                //Assets.fireballWoosh.stop();
+                Assets.fireballWoosh.play();
+            }
         }
         return false;
     }
@@ -161,10 +190,17 @@ public class Player extends InputAdapter {
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.A) {
             left = 0;
+            //atkDirX = 0;
         }
         if (keycode == Input.Keys.D) {
             right = 0;
-
+            //atkDirX = 0;
+        }
+        if (keycode == Input.Keys.W) {
+            //atkDirY = 0;
+        }
+        if (keycode == Input.Keys.S) {
+            //atkDirY = 0;
         }
         return true;
     }

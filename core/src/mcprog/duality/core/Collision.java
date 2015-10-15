@@ -7,14 +7,17 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 import net.dermetfan.gdx.physics.box2d.ContactAdapter;
 
+import mcprog.duality.library.Assets;
 import mcprog.duality.utility.LogHelper;
 
 /**
  * Created by mcprog on 10/13/2015.
  */
 public class Collision extends ContactAdapter {
+
 
     @Override
     public void beginContact(Contact contact) {
@@ -27,8 +30,12 @@ public class Collision extends ContactAdapter {
                 Gdx.app.log(LogHelper.getClassyTag(this), "contact happened with non null user data b");
                 if (a.getBody().getUserData().equals("attack") && b.getBody().getUserData().equals("tile")) {
                     a.getBody().setUserData("delete");
+                    b.getBody().setUserData("--health");
+                    attackHit();
                 } else if (b.getBody().getUserData().equals("attack") && a.getBody().getUserData().equals("tile")) {
                     b.getBody().setUserData("delete");
+                    a.getBody().setUserData("--health");
+                    attackHit();
                 }
             }
         }
@@ -46,5 +53,10 @@ public class Collision extends ContactAdapter {
                 }
             }
         }
+
+    }
+
+    private void attackHit () {
+        Assets.fireballImpact.play();
     }
 }
