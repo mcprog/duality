@@ -137,6 +137,9 @@ public class Terrain {
         else if (tileDeterminer.equals("DownLeftRight")) {
             tiles[x][y].setRegion(stoneTileset[0][3]);
         }
+        else if (tileDeterminer.equals("UpDownLeftRight")) {
+            tiles[x][y].setRegion(stoneTileset[0][0]);
+        }
 
         else {
             tiles[x][y].setRegion(stoneTileset[1][7]);
