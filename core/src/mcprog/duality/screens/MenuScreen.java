@@ -20,6 +20,7 @@ import java.util.Vector;
 
 import mcprog.duality.Duality;
 import mcprog.duality.library.Reference;
+import mcprog.duality.ui.MenuFactory;
 import mcprog.duality.ui.MenuTable;
 import mcprog.duality.utility.LogHelper;
 
@@ -33,15 +34,22 @@ public class MenuScreen extends ScreenAdapter {
     protected Stage stage;
 
     private Table table;
+    private int state;
     private Sprite viewportVisualizer;
 
     public MenuScreen (Duality game) {
         this.game = game;
+        state = MenuFactory.MAIN;
 
         guiCam = new OrthographicCamera();
         viewport = new FillViewport(Reference.W_WIDTH / 4, Reference.W_HEIGHT / 4, guiCam);
         viewport.apply();
         guiCam.position.set(guiCam.viewportWidth / 2f, guiCam.viewportHeight / 2f, 0);
+    }
+
+    public MenuScreen (Duality game, int state) {
+        this(game);
+        this.state = state;
     }
 
     @Override
@@ -51,7 +59,7 @@ public class MenuScreen extends ScreenAdapter {
         viewportVisualizer = new Sprite(new Texture(Gdx.files.internal("images/gemma-arterton.jpg")));
         viewportVisualizer.setSize(guiCam.viewportWidth, guiCam.viewportHeight);
         stage = new Stage(viewport);
-        table = new MenuTable(game);
+        table = new MenuTable(game, state);
         table.setBounds(0, 0, guiCam.viewportWidth, guiCam.viewportHeight);
 
         //table.debug();

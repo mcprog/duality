@@ -18,26 +18,52 @@ import mcprog.duality.utility.LogHelper;
  */
 public class Collision extends ContactAdapter {
 
+    private int playerFootContacts;
 
     @Override
     public void beginContact(Contact contact) {
         Fixture a = contact.getFixtureA();
         Fixture b = contact.getFixtureB();
-        Gdx.app.log(LogHelper.getClassyTag(this), "contact happened");
+        //Gdx.app.log(LogHelper.getClassyTag(this), "contact happened");
         if (a.getBody().getUserData() != null) {
-            Gdx.app.log(LogHelper.getClassyTag(this), "contact happened with non null user data a");
             if (b.getBody().getUserData() != null) {
-                Gdx.app.log(LogHelper.getClassyTag(this), "contact happened with non null user data b");
                 if (a.getBody().getUserData().equals("attack") && b.getBody().getUserData().equals("tile")) {
                     a.getBody().setUserData("delete");
                     b.getBody().setUserData("--health");
-                    attackHit();
+                    //attackHit();
                 } else if (b.getBody().getUserData().equals("attack") && a.getBody().getUserData().equals("tile")) {
                     b.getBody().setUserData("delete");
                     a.getBody().setUserData("--health");
-                    attackHit();
+                    //attackHit();
                 }
             }
+        }
+
+        if (a.getUserData() != null && a.getUserData().equals("foot")) {
+            ++playerFootContacts;
+            Gdx.app.log(LogHelper.getClassyTag(this), "player on ground a");
+
+        }
+        else if (b.getUserData() != null && b.getUserData().equals("foot")) {
+            ++playerFootContacts;
+            Gdx.app.log(LogHelper.getClassyTag(this), "cplayer on ground b");
+
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        //Gdx.app.log(LogHelper.getClassyTag(this), "contact ended");
+        if (a.getUserData() != null && a.getUserData().equals("foot")) {
+                --playerFootContacts;
+                Gdx.app.log(LogHelper.getClassyTag(this), "player off ground a");
+        }
+        else if (b.getUserData() != null && b.getUserData().equals("foot")) {
+                --playerFootContacts;
+                Gdx.app.log(LogHelper.getClassyTag(this), "cplayer off ground b");
+
         }
     }
 
@@ -56,7 +82,7 @@ public class Collision extends ContactAdapter {
 
     }
 
-    private void attackHit () {
-        Assets.fireballImpact.play();
+    public boolean isPlayerOnGround () {
+        return playerFootContacts > 0;
     }
 }

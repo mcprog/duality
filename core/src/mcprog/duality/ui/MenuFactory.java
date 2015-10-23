@@ -40,11 +40,11 @@ public abstract class MenuFactory extends Table {
 
     // States
     protected int state;
-    protected static final int MAIN =           1;
-    protected static final int PLAY_SELECT =    2;
-    protected static final int SINGLE_SELECT =  3;
-    protected static final int MULTI_SELECT =   4;
-    protected static final int OPTIONS =        5;
+    public static final int MAIN =           1;
+    public static final int PLAY_SELECT =    2;
+    public static final int SINGLE_SELECT =  3;
+    public static final int MULTI_SELECT =   4;
+    public static final int OPTIONS =        5;
 
     /**
      * Loads images to buttons. If there is file i/o errors, this is probably the culprit.
@@ -60,6 +60,12 @@ public abstract class MenuFactory extends Table {
         backButton = getInitImageButton("images/ui/back-button.png", 30, 32);
         storyButton = getInitImageButton("images/ui/story-button.png", 86, 32);
         twitterButton = getInitImageButton("images/ui/twitter-button.png", 120, 128);
+    }
+
+    public MenuFactory (Duality game, int state) {
+        this(game);
+        this.state = state;
+
     }
 
     private void addQuitButton () {

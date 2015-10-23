@@ -31,4 +31,27 @@ public class MenuTable extends MenuFactory {
         listenToTwitterButton();
         listenAndSetScreen(storyButton, new GameScreen(game));
     }
+
+    public MenuTable (Duality game, int state) {
+        super(game, state);
+
+        setFillParent(true);
+        if (state == MenuFactory.MAIN) {
+            setupMainMenu();
+        }
+        else if (state == MenuFactory.SINGLE_SELECT) {
+            setupSingleSelect();
+        }
+
+
+        listenAndQuit(quitButton);
+        listenToBackButton();
+
+        listenAndSwitchTo(playButton, PLAY_SELECT);
+        listenAndSwitchTo(singleplayerButton, SINGLE_SELECT);
+        listenAndSwitchTo(multiplayerButton, MULTI_SELECT);
+        listenAndSwitchTo(optionsButton, OPTIONS);
+        listenToTwitterButton();
+        listenAndSetScreen(storyButton, new GameScreen(game));
+    }
 }

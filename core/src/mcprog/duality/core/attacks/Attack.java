@@ -1,4 +1,4 @@
-package mcprog.duality.core;
+package mcprog.duality.core.attacks;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,12 +23,12 @@ public class Attack {
     protected float vY;
     protected Sprite sprite;
     protected BodyDef bodyDef;
-    protected Body body;
     protected float width;
     protected float height;
 
+    public Body body;
+    public boolean hasGravity;
 
-    //private float attackTimer = .5f;
 
     public Attack (TextureRegion tileRegion, float x, float y, float vX, float vY) {
         sprite = new Sprite(tileRegion);
@@ -55,7 +55,9 @@ public class Attack {
         fixtureDef.density = 1;
         body.createFixture(fixtureDef);
         circle.dispose();
-        body.setGravityScale(0);
+        if (!hasGravity) {
+            body.setGravityScale(0);
+        }
         body.setLinearVelocity(vX, vY);
         body.setUserData("attack");
     }
@@ -69,5 +71,9 @@ public class Attack {
 
     public void draw (SpriteBatch batch) {
         sprite.draw(batch);
+    }
+
+    public void setRotation (float radians) {
+        body.setTransform(body.getPosition(), radians);
     }
 }
