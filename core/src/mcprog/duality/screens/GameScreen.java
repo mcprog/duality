@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import mcprog.duality.Duality;
 import mcprog.duality.core.Collision;
+import mcprog.duality.core.players.Magic;
 import mcprog.duality.core.players.Player;
 import mcprog.duality.core.Terrain;
 import mcprog.duality.library.Reference;
@@ -62,7 +63,7 @@ public class GameScreen extends ScreenAdapter {
 
 
     private void loadPlayer () {
-        player = new Player(testPlayerTex, 4, 4, game, physicsWorld);
+        player = new Magic(4, 4, game, physicsWorld);
         player.create(physicsWorld);
     }
 

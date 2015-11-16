@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import mcprog.duality.Duality;
 import mcprog.duality.core.players.Player;
 import mcprog.duality.screens.MenuScreen;
+import mcprog.duality.ui.MenuTable;
 
 /**
  * Created by mcprog on 10/20/2015.
@@ -18,6 +19,7 @@ public class KeyboardHandler extends InputAdapter {
     private static int UP_KEY = Input.Keys.W;
     private static int DOWN_KEY = Input.Keys.S;
     private static int PRIMARY_ATTACK_KEY = Input.Keys.UP;
+    private static int SECONDARY_ATTACK_KEY = Input.Keys.LEFT;
 
     private static int EXIT_GAME_KEY = Input.Keys.ESCAPE;
 
@@ -58,6 +60,10 @@ public class KeyboardHandler extends InputAdapter {
             player.primaryAttack();
             return true;
         }
+        else  if (keycode == SECONDARY_ATTACK_KEY) {
+            player.secondaryAttack();
+            return true;
+        }
         return false;
     }
 
@@ -80,7 +86,7 @@ public class KeyboardHandler extends InputAdapter {
             return true;
         }
         else if (keycode == EXIT_GAME_KEY) {
-            game.setScreen(new MenuScreen(game));
+            game.setScreen(new MenuScreen(game, MenuTable.SINGLE_SELECT));
             return true;
         }
         return false;

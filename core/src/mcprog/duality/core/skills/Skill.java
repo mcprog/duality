@@ -28,7 +28,7 @@ public abstract class Skill {
     public void launch (World world, float x, float y, int atkDirX, int atkDirY) {
         if (coolDownTimer >= coolDownTime) {
             playLaunchSound();
-            Attack atk = new Attack(region, x, y, atkDirX * speed, atkDirY * speed);
+            Attack atk = new Attack(region, x + atkDirX * .45f, y + atkDirY * .75f, atkDirX * speed, atkDirY * speed);
             attacks.add(atk);
             atk.create(world);
             atk.setRotation(MathUtils.atan2(atkDirY, atkDirX));

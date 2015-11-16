@@ -1,10 +1,11 @@
-package mcprog.duality.core.skills;
+package mcprog.duality.core.skills.cast;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import mcprog.duality.core.attacks.Attack;
+import mcprog.duality.core.skills.Skill;
 import mcprog.duality.library.Assets;
 
 /**
