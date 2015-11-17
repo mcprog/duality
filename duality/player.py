@@ -13,11 +13,13 @@ class Player:
         self.vy = 0
         self.falling = True
         self.onGround = False
+        self.rotation = 0
 
     def jump(self, force):
-        self.vy += force
-        self.y += self.vy
-        self.onGround = False
+        if (self.onGround):
+            self.vy += force
+            self.y += self.vy
+            self.onGround = False
 
     def move(self, vx):
         self.vx = vx
@@ -32,19 +34,20 @@ class Player:
             collision = self.detectCollision(self.x, self.y, self.width, self.height, block.x, block.y, block.width,
                                              block.height)
             if collision:
+                blockX = block.x
                 blockY = block.y  # may collide in the middle of the block so save for snapping later
                 break  # don't want collision to be changed to False next iteration
 
         if collision:
+            vx = 0
             if self.falling:
                 self.falling = False
                 self.onGround = True
-                self.vy = 0
+                #self.vy = 0
                 self.y = blockY - self.height  # snap to nearest block
         if not self.onGround:
             self.vy += gravity
         self.y += self.vy
-        print(self.onGround)
 
     def render(self, display):
         pygame.draw.rect(display, (0, 200, 0), [self.x, self.y, self.width, self.height])

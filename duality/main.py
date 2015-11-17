@@ -14,11 +14,13 @@ pygame.display.set_caption('Duality')
 FPS = 60
 WALK_SPEED = 5
 RUN_SPEED = 10
+AIR_SPEED = 4
+AIR_ROLL_SPEED = 7
 GRAVITY = .05
 mx = 0
 my = 0
 dx = WALK_SPEED
-vx = WALK_SPEED
+vx = AIR_SPEED
 dy = GRAVITY
 left = False
 right = False
@@ -49,12 +51,12 @@ level1 = [
 
     [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
 
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
     [1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1]
 ]
 
@@ -76,7 +78,10 @@ while runGame:
             if event.key == pygame.K_d:
                 right = True
             if event.key == pygame.K_LSHIFT:
-                vx = RUN_SPEED
+                if player.onGround:
+                    vx = RUN_SPEED
+                else:
+                    vx = AIR_ROLL_SPEED
             if event.key == pygame.K_SPACE:
                 player.jump(-2)
         elif event.type == pygame.KEYUP:
@@ -85,7 +90,10 @@ while runGame:
             if event.key == pygame.K_d:
                 right = False
             if event.key == pygame.K_LSHIFT:
-                vx = WALK_SPEED
+                if player.onGround:
+                    vx = WALK_SPEED
+                else:
+                    vx = AIR_SPEED
     if left and not right:
         player.move(-vx)
     elif right and not left:
