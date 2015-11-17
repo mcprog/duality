@@ -1,19 +1,24 @@
+import pygame
+
 __author__ = 'mcprog'
 
 
 class Player:
 
-    def __index__(self, loc=(0, 0)):
-        self.x = 5
-        self.y = 6
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.width = 32
+        self.height = 32
+        self.vy = 0
 
-    def move(self, loc):
-        self.x = loc[0]
-        self.y = loc[1]
+    def jump(self, force):
+        self.vy += force
+        self.y += self.vy
 
-    def move(self, x, y):
-        self.x = x;
-        self.y = y;
+    def update(self, gravity):
+        self.vy += gravity
+        self.y += self.vy
 
-    def getX(self):
-        return self.x;
+    def render(self, display):
+        pygame.draw.rect(display, (0, 0, 0), [self.x, self.y, self.width, self.height])

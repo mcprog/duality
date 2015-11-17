@@ -1,5 +1,6 @@
 import pygame
 from core import color
+from core import player
 
 __author__ = 'mcprog'
 
@@ -12,24 +13,25 @@ pygame.display.set_caption('Duality')
 FPS = 60
 WALK_SPEED = 5
 RUN_SPEED = 10
-GRAVITY_DY = 5
-
+GRAVITY = .5
 mx = 0
 my = 0
 dx = WALK_SPEED
-dy = GRAVITY_DY
+dy = GRAVITY
 left = False
 right = False
 pygame.display.update()  # init update
 
 # game loop
-gameExit = False
+runGame = True
 clock = pygame.time.Clock()
 
-while not gameExit:
+player = player.Player(0, 0)
+
+while runGame:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            gameExit = True
+            runGame = False
             break
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
@@ -38,6 +40,8 @@ while not gameExit:
                 right = True
             if event.key == pygame.K_LSHIFT:
                 dx = RUN_SPEED
+            if event.key == pygame.K_SPACE:
+                player.jump(-20)
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 left = False
@@ -51,7 +55,9 @@ while not gameExit:
         mx += dx
     my += dy
     gameDisplay.fill(color.GRAY75)
-    pygame.draw.rect(gameDisplay, color.YELLOW, [mx, my, 64, 64])
+    #pygame.draw.rect(gameDisplay, color.YELLOW, [mx, my, 64, 64])
+    player.update(GRAVITY)
+    player.render(gameDisplay)
     pygame.display.update()
 
     clock.tick(FPS)
