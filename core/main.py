@@ -13,10 +13,11 @@ pygame.display.set_caption('Duality')
 FPS = 60
 WALK_SPEED = 5
 RUN_SPEED = 10
-GRAVITY = .5
+GRAVITY = .05
 mx = 0
 my = 0
 dx = WALK_SPEED
+vx = WALK_SPEED
 dy = GRAVITY
 left = False
 right = False
@@ -39,20 +40,20 @@ while runGame:
             if event.key == pygame.K_d:
                 right = True
             if event.key == pygame.K_LSHIFT:
-                dx = RUN_SPEED
+                vx = RUN_SPEED
             if event.key == pygame.K_SPACE:
-                player.jump(-20)
+                player.jump(-2)
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 left = False
             if event.key == pygame.K_d:
                 right = False
             if event.key == pygame.K_LSHIFT:
-                dx = WALK_SPEED
+                vx = WALK_SPEED
     if left and not right:
-        mx -= dx
+        player.move(-vx)
     elif right and not left:
-        mx += dx
+        player.move(vx)
     my += dy
     gameDisplay.fill(color.GRAY75)
     #pygame.draw.rect(gameDisplay, color.YELLOW, [mx, my, 64, 64])

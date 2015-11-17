@@ -10,11 +10,16 @@ class Player:
         self.y = y
         self.width = 32
         self.height = 32
+        self.vx = 0
         self.vy = 0
 
     def jump(self, force):
         self.vy += force
         self.y += self.vy
+
+    def move(self, vx):
+        self.vx = vx
+        self.x += vx
 
     def update(self, gravity):
         self.vy += gravity
