@@ -1,4 +1,7 @@
 import pygame
+from pygame.surface import Surface
+from pygame.color import Color
+from pygame.rect import Rect
 
 __author__ = 'mcprog'
 
@@ -7,13 +10,11 @@ class Player:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.width = 32
-        self.height = 32
-        self.vx = 0
-        self.vy = 0
-        self.falling = True
+        self.image = Surface(32, 32)
+        self.image.fill(Color("#0000FF"))
+        self.image.convert()
+        self.rect = Rect(x, y, 32, 32)
         self.onGround = False
-        self.rotation = 0
 
     def jump(self, force):
         if (self.onGround):
@@ -24,6 +25,7 @@ class Player:
     def move(self, vx):
         self.vx = vx
         self.x += vx
+        self.checkedAirwalk = False
 
     def update(self, gravity, blockList):
         if self.vy > 0:
@@ -39,15 +41,27 @@ class Player:
                 break  # don't want collision to be changed to False next iteration
 
         if collision:
-            vx = 0
+            self.vx = 0
             if self.falling:
-                self.falling = False
-                self.onGround = True
-                #self.vy = 0
-                self.y = blockY - self.height  # snap to nearest block
+                if self.onGround:
+                    self.falling = False
+                    self.vx = 0
+                else:
+
+                    self.falling = False
+                    self.onGround = True
+                    self.vy = 0
+                    self.y = blockY - self.height  # snap to nearest block
+            elif self.onGround:
+                self.x = blockX + self.height
+
+
         if not self.onGround:
             self.vy += gravity
+            self.checkedAirwalk = True
+
         self.y += self.vy
+
 
     def render(self, display):
         pygame.draw.rect(display, (0, 200, 0), [self.x, self.y, self.width, self.height])
@@ -61,3 +75,4 @@ class Player:
         if y2 + h2 >= y1 >= y2 or y2 + h2 >= y1 + h1 > y2:
             yWithin = True
         return xWithin and yWithin
+        #if x2 + w2 >= x1 >= x2

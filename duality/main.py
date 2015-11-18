@@ -1,115 +1,219 @@
 import pygame
-from duality import color
-from duality import player
-from duality import block
+from pygame import *
+from duality.utility.reference import *
+from duality.graphics import camera as campkg
 
-__author__ = 'mcprog'
+'''WIN_WIDTH = 1024
+WIN_HEIGHT = 640
+HALF_WIDTH = int(WIN_WIDTH / 2)
+HALF_HEIGHT = int(WIN_HEIGHT / 2)
 
-# inits all of the pygame modules
-print(pygame.init())  # returns a tuple that says whether successfully
+DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
+DEPTH = 32
+FLAGS = 0
+CAMERA_SLACK = 30'''
 
-gameDisplay = pygame.display.set_mode((1024, 640))
-pygame.display.set_caption('Duality')
+def main():
+    global cameraX, cameraY
+    pygame.init()
+    screen = pygame.display.set_mode(DISPLAY, FLAGS, DEPTH)
+    pygame.display.set_caption("Use arrows to move!")
+    timer = pygame.time.Clock()
 
-FPS = 60
-WALK_SPEED = 5
-RUN_SPEED = 10
-AIR_SPEED = 4
-AIR_ROLL_SPEED = 7
-GRAVITY = .05
-mx = 0
-my = 0
-dx = WALK_SPEED
-vx = AIR_SPEED
-dy = GRAVITY
-left = False
-right = False
-pygame.display.update()  # init update
+    up = down = left = right = running = False
+    bg = Surface((32,32))
+    bg.convert()
+    bg.fill(Color("#00FF00"))
+    entities = pygame.sprite.Group()
+    player = Player(32, 32)
+    platforms = []
 
-# game loop
-runGame = True
-clock = pygame.time.Clock()
+    x = y = 0
+    level1File = open('res\level1.dat', 'r')
 
-player = player.Player(0, 0)
 
-#32 columns, 20 rows
-level1 = [
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+    fileY = 0
+    level1 = []
+    for line in level1File:
+        print(line)
+        level1.append(line)
+    # build the level
+    for row in level1:
+        for col in row:
+            if col == "P":
+                p = Platform(x, y)
+                platforms.append(p)
+                entities.add(p)
+            if col == "E":
+                e = ExitBlock(x, y)
+                platforms.append(e)
+                entities.add(e)
+            x += 32
+        y += 32
+        x = 0
 
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+    total_level_width = len(level1[0])*32
+    total_level_height = len(level1)*32
+    camera = campkg.Camera(campkg.complex_camera, total_level_width, total_level_height)
+    entities.add(player)
 
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+    runGame = True
+    while runGame:
+        timer.tick(60)
 
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+        for e in pygame.event.get():
 
-    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
-    [1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1]
-]
+            if e.type == QUIT: runGame = False
 
-blockList = []
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    runGame = False
+                if e.key == K_SPACE:
+                    up = True
+                if e.key == K_s:
+                    down = True
+                if e.key == K_a:
+                    left = True
+                if e.key == K_d:
+                    right = True
+                if e.key == K_LSHIFT:
+                    running = True
 
-for y in range(0, len(level1)):
-    for x in range(0, len(level1[y])):
-        if (level1[y][x] == 1):
-            blockList.append(block.Block(x*32, y*32))
+            if e.type == KEYUP:
+                if e.key == K_SPACE:
+                    up = False
+                if e.key == K_s:
+                    down = False
+                if e.key == K_a:
+                    left = False
+                if e.key == K_d:
+                    right = False
+                if e.key == K_LSHIFT:
+                    running = False
 
-while runGame:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            runGame = False
-            break
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                left = True
-            if event.key == pygame.K_d:
-                right = True
-            if event.key == pygame.K_LSHIFT:
-                if player.onGround:
-                    vx = RUN_SPEED
+        # draw background
+        for y in range(32):
+            for x in range(32):
+                screen.blit(bg, (x * 32, y * 32))
+
+        camera.update(player)
+
+        # update player, draw everything else
+        player.update(up, down, left, right, running, platforms)
+        for e in entities:
+            screen.blit(e.image, camera.apply(e))
+
+        pygame.display.update()
+
+'''class Camera(object):
+    def __init__(self, camera_func, width, height):
+        self.camera_func = camera_func
+        self.state = Rect(0, 0, width, height)
+
+    def apply(self, target):
+        return target.rect.move(self.state.topleft)
+
+    def update(self, target):
+        self.state = self.camera_func(self.state, target.rect)
+
+def simple_camera(camera, target_rect):
+    l, t, _, _ = target_rect
+    _, _, w, h = camera
+    return Rect(-l+HALF_WIDTH, -t+HALF_HEIGHT, w, h)
+
+def complex_camera(camera, target_rect):
+    l, t, _, _ = target_rect
+    _, _, w, h = camera
+    l, t, _, _ = -l+HALF_WIDTH, -t+HALF_HEIGHT, w, h
+
+    l = min(0, l)                           # stop scrolling at the left edge
+    l = max(-(camera.width-WIN_WIDTH), l)   # stop scrolling at the right edge
+    t = max(-(camera.height-WIN_HEIGHT), t) # stop scrolling at the bottom
+    t = min(0, t)                           # stop scrolling at the top
+    return Rect(l, t, w, h)
+'''
+class Entity(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+
+class Player(Entity):
+    def __init__(self, x, y):
+        Entity.__init__(self)
+        self.xvel = 0
+        self.yvel = 0
+        self.onGround = False
+        self.image = Surface((32,32))
+        self.image.fill(Color("#0000FF"))
+        self.image.convert()
+        self.rect = Rect(x, y, 32, 32)
+
+    def update(self, up, down, left, right, running, platforms):
+        if up:
+            # only jump if on the ground
+            if self.onGround: self.yvel -= 10
+        if down:
+            pass
+        if running:
+            self.xvel = 12
+        if left:
+            self.xvel = -8
+        if right:
+            self.xvel = 8
+        if not self.onGround:
+            # only accelerate with gravity if in the air
+            self.yvel += 0.3
+            # max falling speed
+            if self.yvel > 100: self.yvel = 100
+        if not(left or right):
+            self.xvel = 0
+        # increment in x direction
+        self.rect.left += self.xvel
+        # do x-axis collisions
+        self.collide(self.xvel, 0, platforms)
+        # increment in y direction
+        self.rect.top += self.yvel
+        # assuming we're in the air
+        self.onGround = False;
+        # do y-axis collisions
+        self.collide(0, self.yvel, platforms)
+
+    def collide(self, xvel, yvel, platforms):
+        for p in platforms:
+            if pygame.sprite.collide_rect(self, p):
+                if isinstance(p, ExitBlock):
+                    #pygame.event.post(pygame.event.Event(QUIT))
+                    pass
                 else:
-                    vx = AIR_ROLL_SPEED
-            if event.key == pygame.K_SPACE:
-                player.jump(-2)
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_a:
-                left = False
-            if event.key == pygame.K_d:
-                right = False
-            if event.key == pygame.K_LSHIFT:
-                if player.onGround:
-                    vx = WALK_SPEED
-                else:
-                    vx = AIR_SPEED
-    if left and not right:
-        player.move(-vx)
-    elif right and not left:
-        player.move(vx)
-    my += dy
-    gameDisplay.fill(color.GRAY75)
-    #pygame.draw.rect(gameDisplay, color.YELLOW, [mx, my, 64, 64])
-    player.update(GRAVITY, blockList)
+                    if xvel > 0:
+                        self.rect.right = p.rect.left
+                        print("collide right")
+                    if xvel < 0:
+                        self.rect.left = p.rect.right
+                        print("collide left")
+                    if yvel > 0:
+                        self.rect.bottom = p.rect.top
+                        self.onGround = True
+                        self.yvel = 0
+                    if yvel < 0:
+                        self.rect.top = p.rect.bottom
+                        self.yvel = 0
 
-    for block in blockList:
-        block.render(gameDisplay)
 
-    player.render(gameDisplay)
-    pygame.display.update()
+class Platform(Entity):
+    def __init__(self, x, y):
+        Entity.__init__(self)
+        self.image = Surface((32, 32))
+        self.image.convert()
+        self.image.fill(Color("#DDDDDD"))
+        self.rect = Rect(x, y, 32, 32)
 
-    clock.tick(FPS)
+    def update(self):
+        pass
 
-pygame.quit()  # quits pygame
-quit()  # quits python
+class ExitBlock(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        self.image.fill(Color("#FF0000"))
+
+if __name__ == "__main__":
+    main()
