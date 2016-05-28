@@ -15,6 +15,7 @@ import mcprog.duality.core.skills.cast.SkillFireball;
 public class Magic extends Player {
 
     private SkillFireball primaryAttack;
+    private Skill secondaryAttack;
 
     public Magic(float x, float y, Duality game, World world) {
         super(new TextureRegion(new Texture(Gdx.files.internal("images/player.png")), 0, 0, 48, 32), x, y, game, world);
@@ -24,5 +25,10 @@ public class Magic extends Player {
     @Override
     protected Skill getPrimaryAttack() {
         return primaryAttack;
+    }
+
+    @Override
+    public Skill getSecondaryAttack() {
+        return secondaryAttack;
     }
 }

@@ -97,7 +97,7 @@ public class GameScreen extends ScreenAdapter {
         gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         bgBatch.begin();
-        //bgBatch.draw(bg, 0, 0);
+        bgBatch.draw(bg, 0, 0);
         bgBatch.end();
 
         game.gameBatch.setProjectionMatrix(camera.combined);
@@ -107,7 +107,7 @@ public class GameScreen extends ScreenAdapter {
 
         player.draw(game.gameBatch);
         game.gameBatch.end();
-        //box2DDebugRenderer.render(physicsWorld, camera.combined);
+        box2DDebugRenderer.render(physicsWorld, camera.combined);
     }
 
     @Override
